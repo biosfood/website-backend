@@ -2,6 +2,9 @@ import { User } from './database'
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { resolvers } from './resolvers'
+import { config } from 'dotenv'
+
+config()
 
 const types = `#graphql
   type Article {
@@ -27,6 +30,7 @@ const types = `#graphql
 
   type Mutation {
     createUser(name: String, email: String): User
+    loginUser(name: String): String
   }
 `
 
