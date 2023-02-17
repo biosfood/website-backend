@@ -2,6 +2,21 @@ import { User } from './database'
 import { GraphQLError } from 'graphql'
 import jwt from 'jsonwebtoken'
 
+function verify(token: String): Promise<User> {
+  return new Promise<User>((resolve, reject) =>  {
+    jwt.verify(token, process.env.JWT_SECRET, async function(error, decoded) {
+      if (error) {
+        return reject()
+      }
+      const user = await User.findOne({where : {id: decoded.userId}})
+      if (!user) {
+        return reject()
+      }
+      resolve(user)
+    })
+  }).catch(() => {throw new GraphQLError("access denied")})
+}
+
 export const resolvers = {
   Query: {
     users: async () => await User.findAll()
@@ -22,10 +37,13 @@ export const resolvers = {
       if (!user) {
         throw new GraphQLError("account unknown")
       }
-      const data = {
-        userId: user.id,
-      }
-      return jwt.sign(data, process.env.JWT_SECRET)
+      return jwt.sign({userId: user.id}, process.env.JWT_SECRET, {expiresIn: '2h'})
+    },
+    changeName: async(_, { token, name }) =>  {
+      const user = await verify(token)
+      user.name = name
+      user.save()
+      return user
     }
   }
 };

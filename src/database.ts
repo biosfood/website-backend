@@ -15,11 +15,11 @@ User.init({
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
+    primaryKey: true,
   },
   name: {
     type: new DataTypes.STRING(128),
     allowNull: false,
-    primaryKey: true,
   },
   email: {
     type: new DataTypes.STRING(128),
