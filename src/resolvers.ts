@@ -22,20 +22,19 @@ export const resolvers = {
     users: async () => await User.findAll()
   },
   Mutation: {
-    createUser: async (_, { name, email }) => {
+    createUser: async (_, { name, email, password }) => {
       if ((await User.findAll({where: {name: name}})).length) {
         throw new GraphQLError("username already taken")
       }
       if ((await User.findAll({where: {email: email}})).length) {
         throw new GraphQLError("email already used by another username")
       }
-      return await User.create({name, email})
+      return await User.create({name, email, password})
     },
-    loginUser: async (_, { name }) => {
-      // TODO: check password
-      const user = await User.findOne({where: {name}})
+    login: async (_, { email, password }) => {
+      const user = await User.findOne({where: {email, password}})
       if (!user) {
-        throw new GraphQLError("account unknown")
+        throw new GraphQLError("access denied")
       }
       return jwt.sign({userId: user.id}, process.env.JWT_SECRET, {expiresIn: '2h'})
     },

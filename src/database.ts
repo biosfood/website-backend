@@ -25,6 +25,10 @@ User.init({
     type: new DataTypes.STRING(128),
     allowNull: false,
   },
+  password: {
+    type: new DataTypes.STRING(128),
+    allowNull: false,
+  },
 },
 {
   tableName: 'users',
