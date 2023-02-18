@@ -11,8 +11,8 @@
   "author": "Lukas Eisenhauer",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@apollo/server": "^4.4.0",
     "@types/sequelize": "^4.28.14",
+    "apollo-server-express": "^3.11.1",
     "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
     "jsonwebtoken": "^9.0.0",

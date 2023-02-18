@@ -41,8 +41,7 @@ export const resolvers = {
     },
     changeName: async(_, { token, name }) =>  {
       const user = await verify(token)
-      user.name = name
-      user.save()
+      user.update({name})
       return user
     }
   }

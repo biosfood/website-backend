@@ -1,8 +1,8 @@
 import { User } from './database'
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { ApolloServer } from 'apollo-server-express';
 import { resolvers } from './resolvers'
 import { config } from 'dotenv'
+import express, { Express } from 'express';
 
 config()
 
@@ -39,7 +39,7 @@ const server = new ApolloServer({
   typeDefs: types,
   resolvers,
 });
-
-const {url} = await startStandaloneServer(server, {listen: {port: 4000}})
-
-console.log(`server started at ${url}`)
+await server.start()
+const app = express();
+server.applyMiddleware({app, cors: {origin: "*"}})
+app.listen(4000)
