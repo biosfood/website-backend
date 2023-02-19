@@ -1,4 +1,4 @@
-import { User } from './database'
+import { User, Resource } from './database'
 import { GraphQLError } from 'graphql'
 import jwt from 'jsonwebtoken'
 
@@ -19,7 +19,11 @@ function verify(token: String): Promise<User> {
 
 export const resolvers = {
   Query: {
-    users: async () => await User.findAll()
+    userData: async (_, {token}) => await verify(token),
+    resources: async (_, {token}) => {
+      const user = await verify(token)
+      return await Resource.findAll({where: {owner: user.id}})
+    },
   },
   Mutation: {
     createUser: async (_, { name, email, password }) => {
@@ -30,6 +34,10 @@ export const resolvers = {
         throw new GraphQLError("email already used by another username")
       }
       return await User.create({name, email, password})
+    },
+    createResource: async (_, {token, name, preview, content}) => {
+      const user = await verify(token)
+      return await Resource.create({owner: user.id, name, preview, content})
     },
     login: async (_, { email, password }) => {
       const user = await User.findOne({where: {email, password}})
