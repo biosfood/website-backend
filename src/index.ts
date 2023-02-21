@@ -46,5 +46,6 @@ const server = new ApolloServer({
 });
 await server.start()
 const app = express();
+app.use(express.json({ limit: '50mb' }))
 server.applyMiddleware({app, cors: {origin: "*"}})
 app.listen(4000)
