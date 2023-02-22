@@ -37,6 +37,7 @@ const types = `#graphql
     login(email: String, password: String): String
     changeName(token: String, name: String): User
     createResource(token: String, name: String, preview: String, content: String): Resource
+    deleteResource(token: String, id: Int): Boolean
   }
 `
 

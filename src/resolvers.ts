@@ -39,6 +39,11 @@ export const resolvers = {
       const user = await verify(token)
       return await Resource.create({owner: user.id, name, preview, content})
     },
+    deleteResource: async (_, {token, id}) => {
+      const user = await verify(token)
+      Resource.destroy({where: {owner: user.id, id}})
+      return true
+    },
     login: async (_, { email, password }) => {
       const user = await User.findOne({where: {email, password}})
       if (!user) {
