@@ -14,7 +14,7 @@ const types = `#graphql
   }
 
   type Resource {
-    owner: User
+    owner: Int
     id: Int
     name: String
     preview: String
@@ -25,11 +25,13 @@ const types = `#graphql
     id: Int
     name: String
     email: String
+    profilePicture: Resource
   }
 
   type Query {
     userData(token: String): User
     resources(token: String): [Resource]
+    resource(token: String, id: Int): Resource
   }
 
   type Mutation {
@@ -38,6 +40,7 @@ const types = `#graphql
     changeName(token: String, name: String): User
     createResource(token: String, name: String, preview: String, content: String): Resource
     deleteResource(token: String, id: Int): Boolean
+    setProfilePicture(token: String, id: Int): Boolean
   }
 `
 

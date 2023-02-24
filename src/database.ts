@@ -4,11 +4,20 @@ export const db = new Sequelize({
   dialect: 'sqlite',
   storage: './store.sqlite'
 });
-  
+
+export class Resource extends Model {
+  declare id: number;
+  declare owner: number;
+  declare name: string;
+  declare preview: string;
+  declare content: string;
+}
+
 export class User extends Model {
   declare id: number;
   declare name: string;
   declare email: string;
+  declare profilePicture: Resource;
 }
 
 User.init({
@@ -34,14 +43,6 @@ User.init({
   tableName: 'users',
   sequelize: db,
 })
-
-export class Resource extends Model {
-  declare id: number;
-  declare owner: number;
-  declare name: string;
-  declare preview: string;
-  declare content: string;
-}
 
 Resource.init({
   id: {
@@ -70,6 +71,8 @@ Resource.init({
   sequelize: db,
 })
 
+
+User.belongsTo(Resource, { as: 'profilePicture', constraints: false })
 
 await User.sync();
 await Resource.sync()

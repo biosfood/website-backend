@@ -8,7 +8,7 @@ function verify(token: String): Promise<User> {
       if (error) {
         return reject()
       }
-      const user = await User.findOne({where : {id: decoded.userId}})
+      const user = await User.findOne({where : {id: decoded.userId}, include: {model: Resource, as: 'profilePicture'}})
       if (!user) {
         return reject()
       }
@@ -24,6 +24,10 @@ export const resolvers = {
       const user = await verify(token)
       return await Resource.findAll({where: {owner: user.id}})
     },
+    resource: async (_, {token, id}) => {
+      const user = await verify(token)
+      return await Resource.findOne({where: {owner: user.id, id}})
+    }
   },
   Mutation: {
     createUser: async (_, { name, email, password }) => {
@@ -33,7 +37,7 @@ export const resolvers = {
       if ((await User.findAll({where: {email: email}})).length) {
         throw new GraphQLError("email already used by another username")
       }
-      return await User.create({name, email, password})
+      return await User.create({name, email, password, profilePicture: 0})
     },
     createResource: async (_, {token, name, preview, content}) => {
       const user = await verify(token)
@@ -55,6 +59,11 @@ export const resolvers = {
       const user = await verify(token)
       user.update({name})
       return user
+    },
+    setProfilePicture: async(_, {token, id}) => {
+      const user = await verify(token)
+      user.update({profilePictureId: id ? (await Resource.findOne({where: {owner: user.id, id}})).id : 0})
+      return true
     }
   }
 };
