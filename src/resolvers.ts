@@ -70,5 +70,10 @@ export const resolvers = {
       user.update({password: newPassword})
       return true
     },
+    changeEmail: async(_, {token, newEmail}) => {
+      const user = await verify(token)
+      user.update({email: newEmail})
+      return true
+    },
   }
 };

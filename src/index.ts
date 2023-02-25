@@ -36,6 +36,7 @@ const types = `#graphql
     deleteResource(token: String, id: Int): Boolean
     setProfilePicture(token: String, id: Int): Boolean
     changePassword(token: String, newPassword: String): Boolean
+    changeEmail(token: String, newEmail: String): Boolean
   }
 `
 
