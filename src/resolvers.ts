@@ -64,6 +64,11 @@ export const resolvers = {
       const user = await verify(token)
       user.update({profilePictureId: id ? (await Resource.findOne({where: {owner: user.id, id}})).id : 0})
       return true
-    }
+    },
+    changePassword: async(_, {token, newPassword}) => {
+      const user = await verify(token)
+      user.update({password: newPassword})
+      return true
+    },
   }
 };

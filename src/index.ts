@@ -7,12 +7,6 @@ import express, { Express } from 'express';
 config()
 
 const types = `#graphql
-  type Article {
-    title: String
-    author: String
-    content: String
-  }
-
   type Resource {
     owner: Int
     id: Int
@@ -41,6 +35,7 @@ const types = `#graphql
     createResource(token: String, name: String, preview: String, content: String): Resource
     deleteResource(token: String, id: Int): Boolean
     setProfilePicture(token: String, id: Int): Boolean
+    changePassword(token: String, newPassword: String): Boolean
   }
 `
 
