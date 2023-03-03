@@ -1,4 +1,4 @@
-import { User, Resource } from './database'
+import { User, Resource, datatypes } from './database'
 import { GraphQLError } from 'graphql'
 import jwt from 'jsonwebtoken'
 
@@ -8,7 +8,7 @@ function verify(token: String): Promise<User> {
       if (error) {
         return reject()
       }
-      const user = await User.findOne({where : {id: decoded.userId}, include: {model: Resource, as: 'profilePicture'}})
+      const user = await User.findOne({where : {id: decoded.userId}})
       if (!user) {
         return reject()
       }
@@ -19,14 +19,21 @@ function verify(token: String): Promise<User> {
 
 export const resolvers = {
   Query: {
-    userData: async (_, {token}) => await verify(token),
-    resources: async (_, {token}) => {
+    userData: async (_, {token}) => {
       const user = await verify(token)
-      return await Resource.findAll({where: {owner: user.id}})
+      const result = await User.findOne({where: {id: user.id}, include: [
+        {model: Resource, as: 'resources'},
+        {model: Resource, as: 'profilePicture'},
+        ]
+      })
+      result.resources.forEach(element => {
+        element.resourceType = datatypes[element.type]
+      });
+      return result
     },
     resource: async (_, {token, id}) => {
       const user = await verify(token)
-      return await Resource.findOne({where: {owner: user.id, id}})
+      return await Resource.findOne({where: {UserId: user.id, id}})
     }
   },
   Mutation: {
@@ -39,13 +46,17 @@ export const resolvers = {
       }
       return await User.create({name, email, password, profilePicture: 0})
     },
-    createResource: async (_, {token, name, preview, content}) => {
+    createResource: async (_, {token, type, name, preview, content}) => {
       const user = await verify(token)
-      return await Resource.create({owner: user.id, name, preview, content})
+      const typeIndex = datatypes.indexOf(type)
+      if (typeIndex < 0) {
+        throw new GraphQLError("unknown file type")
+      }
+      return await Resource.create({UserId: user.id, name, preview, content, type: typeIndex})
     },
     deleteResource: async (_, {token, id}) => {
       const user = await verify(token)
-      Resource.destroy({where: {owner: user.id, id}})
+      Resource.destroy({where: {UserId: user.id, id}})
       return true
     },
     login: async (_, { email, password }) => {
@@ -62,7 +73,7 @@ export const resolvers = {
     },
     setProfilePicture: async(_, {token, id}) => {
       const user = await verify(token)
-      user.update({profilePictureId: id ? (await Resource.findOne({where: {owner: user.id, id}})).id : 0})
+      user.update({profilePictureId: id ? (await Resource.findOne({where: {UserId: user.id, id}})).id : 0})
       return true
     },
     changePassword: async(_, {token, newPassword}) => {

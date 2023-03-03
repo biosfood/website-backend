@@ -8,8 +8,8 @@ config()
 
 const types = `#graphql
   type Resource {
-    owner: Int
     id: Int
+    resourceType: String
     name: String
     preview: String
     content: String
@@ -20,11 +20,11 @@ const types = `#graphql
     name: String
     email: String
     profilePicture: Resource
+    resources: [Resource]
   }
 
   type Query {
     userData(token: String): User
-    resources(token: String): [Resource]
     resource(token: String, id: Int): Resource
   }
 
@@ -32,7 +32,7 @@ const types = `#graphql
     createUser(name: String, email: String, password: String): User
     login(email: String, password: String): String
     changeName(token: String, name: String): User
-    createResource(token: String, name: String, preview: String, content: String): Resource
+    createResource(token: String, type: String, name: String, preview: String, content: String): Resource
     deleteResource(token: String, id: Int): Boolean
     setProfilePicture(token: String, id: Int): Boolean
     changePassword(token: String, newPassword: String): Boolean

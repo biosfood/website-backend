@@ -5,9 +5,15 @@ export const db = new Sequelize({
   storage: './store.sqlite'
 });
 
+export const datatypes = [
+  'image',
+  'article',
+]
+
 export class Resource extends Model {
   declare id: number;
-  declare owner: number;
+  declare type: number;
+  declare resourceType: string;
   declare name: string;
   declare preview: string;
   declare content: string;
@@ -18,6 +24,7 @@ export class User extends Model {
   declare name: string;
   declare email: string;
   declare profilePicture: Resource;
+  declare resources: Array<Resource>;
 }
 
 User.init({
@@ -50,7 +57,7 @@ Resource.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  owner: {
+  type: {
     type: DataTypes.INTEGER,
   },
   name: {
@@ -73,6 +80,7 @@ Resource.init({
 
 
 User.belongsTo(Resource, { as: 'profilePicture', constraints: false })
+User.hasMany(Resource, {as: 'resources'})
 
-await User.sync();
+await User.sync()
 await Resource.sync()
