@@ -44,7 +44,9 @@ export const resolvers = {
       if ((await User.findAll({where: {email: email}})).length) {
         throw new GraphQLError("email already used by another username")
       }
-      return await User.create({name, email, password, profilePicture: 0})
+      const user = await User.create({name, email, password})
+      await Resource.create({UserId: user.id, name: '/', preview: 'root article', content: 'change me!', type: datatypes.indexOf('article')})
+      return user
     },
     createResource: async (_, {token, type, name, preview, content}) => {
       const user = await verify(token)
