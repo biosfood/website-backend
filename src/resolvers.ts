@@ -56,6 +56,15 @@ export const resolvers = {
       }
       return await Resource.create({UserId: user.id, name, preview, content, type: typeIndex})
     },
+    updateResource: async (_, {token, id, preview, content}) => {
+      const user = await verify(token)
+      const resource = await Resource.findOne({where: {UserId: user.id, id}})
+      if (!resource) {
+        throw new GraphQLError("resource not found")
+      }
+      resource.update({preview, content})
+      return true
+    },
     deleteResource: async (_, {token, id}) => {
       const user = await verify(token)
       Resource.destroy({where: {UserId: user.id, id}})
