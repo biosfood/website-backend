@@ -31,9 +31,15 @@ export const resolvers = {
       });
       return result
     },
-    resource: async (_, {token, id}) => {
-      const user = await verify(token)
-      return await Resource.findOne({where: {UserId: user.id, id}})
+    resources: async (_, {username}) => {
+      const user = await User.findOne({where: {name: username}})
+      if (!user) {
+        throw new GraphQLError("user doesn't exist")
+      }
+      return await Resource.findAll({where: {UserId: user.id}})
+    },
+    resource: async (_, {id}) => {
+      return await Resource.findOne({where: {id}})
     }
   },
   Mutation: {
