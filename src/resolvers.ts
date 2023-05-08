@@ -19,6 +19,9 @@ function verify(token: String): Promise<User> {
 
 export const resolvers = {
   Query: {
+    users: async () => {
+      return await User.findAll({include: [{model: Resource, as: 'profilePicture'}]})
+    },
     userData: async (_, {token}) => {
       const user = await verify(token)
       const result = await User.findOne({where: {id: user.id}, include: [

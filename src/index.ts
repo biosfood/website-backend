@@ -25,6 +25,7 @@ const types = `#graphql
   }
 
   type Query {
+    users: [User]
     userData(token: String): User
     resources(username: String): [Resource]
     resource(id: Int): Resource
