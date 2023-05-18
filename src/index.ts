@@ -29,6 +29,7 @@ const types = `#graphql
     userData(token: String): User
     resources(username: String): [Resource]
     resource(id: Int): Resource
+    resourceByName(username: String, name: String): Resource
   }
 
   type Mutation {
