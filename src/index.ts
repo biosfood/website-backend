@@ -20,6 +20,7 @@ const types = `#graphql
     id: Int
     name: String
     email: String
+    hostname: String
     profilePicture: Resource
     resources: [Resource]
   }
@@ -42,6 +43,7 @@ const types = `#graphql
     setProfilePicture(token: String, id: Int): Boolean
     changePassword(token: String, newPassword: String): Boolean
     changeEmail(token: String, newEmail: String): Boolean
+    changeHostname(token: String, newHostname: String): Boolean
   }
 `
 

@@ -113,5 +113,10 @@ export const resolvers = {
       user.update({email: newEmail})
       return true
     },
+    changeHostname: async(_, {token, newHostname}) => {
+      const user = await verify(token)
+      user.update({hostname: newHostname})
+      return true
+    },
   }
 };

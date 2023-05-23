@@ -17,6 +17,7 @@ export class Resource extends Model {
   declare name: string;
   declare preview: string;
   declare content: string;
+  declare hostname: string;
 }
 
 export class User extends Model {
@@ -44,6 +45,11 @@ User.init({
   password: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  hostname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "",
   },
 },
 {
