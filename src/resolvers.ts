@@ -51,6 +51,13 @@ export const resolvers = {
       }
       return await Resource.findOne({where: {UserId: user.id, name}})
     },
+    resourceByHostname: async (_, {hostname, name}) => {
+      const user = await User.findOne({where: {hostname}})
+      if (!user) {
+        throw new GraphQLError("user doesn't exist")
+      }
+      return await Resource.findOne({where: {UserId: user.id, name}})
+    },
   },
   Mutation: {
     createUser: async (_, { name, email, password }) => {
