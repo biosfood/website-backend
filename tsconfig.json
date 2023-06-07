@@ -5,8 +5,9 @@
     "lib": ["es2020"],
     "target": "es2020",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": ["node"],
+    "esModuleInterop": true
   }
 }

@@ -1,9 +1,11 @@
-import { User } from './database'
-import { ApolloServer } from 'apollo-server-express';
-import { resolvers } from './resolvers'
+import { ApolloServer } from '@apollo/server';
+import { resolvers } from './resolvers.js'
 import { config } from 'dotenv'
-import express, { Express } from 'express';
-import { Resource } from './database'
+import express from 'express';
+import cors from 'cors';
+import { expressMiddleware } from '@apollo/server/express4';
+import { Resource } from './database.js';
+import bodyParser from 'body-parser';
 
 config()
 
@@ -74,5 +76,6 @@ app.get('/resource', async (request, response) => {
   response.end(img); 
 })
 
-server.applyMiddleware({app, cors: {origin: "*"}})
+// server.applyMiddleware({app, cors: {origin: "*"}})
+app.use('/graphql', cors<cors.CorsRequest>(), bodyParser.json(), expressMiddleware(server));
 app.listen(4000)

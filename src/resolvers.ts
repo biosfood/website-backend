@@ -1,4 +1,4 @@
-import { User, Resource, datatypes } from './database'
+import { User, Resource, datatypes } from './database.js'
 import { GraphQLError } from 'graphql'
 import jwt from 'jsonwebtoken'
 
