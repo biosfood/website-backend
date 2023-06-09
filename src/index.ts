@@ -4,7 +4,7 @@ import { config } from 'dotenv'
 import express from 'express';
 import cors from 'cors';
 import { expressMiddleware } from '@apollo/server/express4';
-import { Resource } from './database.js';
+import { Resource, User } from './database.js';
 import bodyParser from 'body-parser';
 
 config()
@@ -74,6 +74,38 @@ app.get('/resource', async (request, response) => {
    'Content-Length': img.length
   });
   response.end(img); 
+})
+
+app.get('/favicon', async (request, response) => {
+  const where = {}
+  if (request.query.username) {
+    where["name"] = request.query.username
+  }
+  if (request.query.hostname) {
+    where["hostname"] = request.query.hostname
+  }
+  if (Object.keys(where).length == 0) {
+    response.send("no user identifier set")
+    return
+  }
+  const user = await User.findOne({where, include: [
+        {model: Resource, as: 'profilePicture'},
+        ]})
+  if (!user) {
+    response.send("unknown user")
+    return
+  }
+  const resource = user.profilePicture
+  if (!resource) {
+    response.end("")
+    return
+  }
+
+  response.writeHead(200, {
+   'Content-Type': 'text/plain',
+   'Content-Length': resource.preview.length
+  });
+  response.end(resource.preview); 
 })
 
 // server.applyMiddleware({app, cors: {origin: "*"}})

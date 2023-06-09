@@ -24,6 +24,8 @@ export class User extends Model {
   declare id: number;
   declare name: string;
   declare email: string;
+  declare password: string;
+  declare hostname: string;
   declare profilePicture: Resource;
   declare resources: Array<Resource>;
 }
