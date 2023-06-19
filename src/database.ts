@@ -2,7 +2,8 @@ import { Sequelize, Model, DataTypes } from 'sequelize'
 
 export const db = new Sequelize({
   dialect: 'sqlite',
-  storage: './store.sqlite'
+  storage: './store.sqlite',
+  logging: false,
 });
 
 export const datatypes = [
