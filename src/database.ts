@@ -3,7 +3,7 @@ import { Sequelize, Model, DataTypes } from 'sequelize'
 export const db = new Sequelize({
   dialect: 'sqlite',
   storage: './store.sqlite',
-  logging: false,
+  logging: process.env.NODE_ENV == "production" ? false : console.log,
 });
 
 export const datatypes = [
